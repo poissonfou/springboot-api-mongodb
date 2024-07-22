@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import emerson.springbootapi.domain.User;
+import emerson.springbootapi.dto.UserDTO;
 import emerson.springbootapi.repository.UserRepository;
 import emerson.springbootapi.services.exception.ObjectNotFoundException;
 
@@ -22,9 +23,14 @@ public class UserService {
 	
 	public User findById(String id) {
 		Optional<User> user = repo.findById(id);
-		if(user == null) {
-			throw new ObjectNotFoundException("Objeto não encontrado");
-		}
-		return user.get();
+		return user.orElseThrow(() -> new  ObjectNotFoundException("Objeto não encontrado"));
+	}
+	
+	public User insert(User obj) {
+		return repo.insert(obj);
+	}
+	
+	public User fromDTO(UserDTO objDto) {
+		return new User(objDto.getId(), objDto.getName(), objDto.getEmail());
 	}
 }
